@@ -12,9 +12,12 @@
 		EE00A6812BD8930C00019099 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE00A6802BD8930C00019099 /* main.swift */; };
 		EE00A68D2BD8A4C700019099 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE00A68C2BD8A4C700019099 /* main.swift */; };
 		EE00A6982BD8AFC900019099 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE00A6972BD8AFC900019099 /* main.swift */; };
-		EE00A69D2BD8B12F00019099 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE00A69C2BD8B12F00019099 /* Constants.swift */; };
 		EE00A69E2BD8B13700019099 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE00A69C2BD8B12F00019099 /* Constants.swift */; };
 		EE00A69F2BD8B13700019099 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE00A69C2BD8B12F00019099 /* Constants.swift */; };
+		EE00A6A82BD9EEBA00019099 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE00A6A72BD9EEBA00019099 /* main.swift */; };
+		EE00A6B32BD9EEC800019099 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE00A6B22BD9EEC800019099 /* main.swift */; };
+		EE00A6B82BD9EF1E00019099 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE00A6B72BD9EF1E00019099 /* Constants.swift */; };
+		EE00A6B92BD9EF1E00019099 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE00A6B72BD9EF1E00019099 /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -63,6 +66,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		EE00A6A32BD9EEBA00019099 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		EE00A6AE2BD9EEC800019099 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +101,11 @@
 		EE00A6952BD8AFC900019099 /* socket-connection-client */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "socket-connection-client"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE00A6972BD8AFC900019099 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		EE00A69C2BD8B12F00019099 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		EE00A6A52BD9EEBA00019099 /* cfsocket-connection-client */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "cfsocket-connection-client"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EE00A6A72BD9EEBA00019099 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		EE00A6B02BD9EEC800019099 /* cfsocket-connection-server */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "cfsocket-connection-server"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EE00A6B22BD9EEC800019099 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		EE00A6B72BD9EF1E00019099 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +144,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EE00A6A22BD9EEBA00019099 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EE00A6AD2BD9EEC800019099 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -128,6 +168,7 @@
 				ACADFF6F2BCD18630077F0C3 /* overview */,
 				EE00A66E2BD892C900019099 /* getaddrinfo */,
 				EE00A6852BD8A4B100019099 /* sock-connections */,
+				EE00A6A02BD9EEA900019099 /* cfsocket-connection */,
 				ACADFF612BCD18420077F0C3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -140,6 +181,8 @@
 				EE00A67E2BD8930C00019099 /* getaddrinfo-client */,
 				EE00A68A2BD8A4C700019099 /* socket-connection-server */,
 				EE00A6952BD8AFC900019099 /* socket-connection-client */,
+				EE00A6A52BD9EEBA00019099 /* cfsocket-connection-client */,
+				EE00A6B02BD9EEC800019099 /* cfsocket-connection-server */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -203,6 +246,32 @@
 				EE00A6972BD8AFC900019099 /* main.swift */,
 			);
 			path = "socket-connection-client";
+			sourceTree = "<group>";
+		};
+		EE00A6A02BD9EEA900019099 /* cfsocket-connection */ = {
+			isa = PBXGroup;
+			children = (
+				EE00A6B72BD9EF1E00019099 /* Constants.swift */,
+				EE00A6B12BD9EEC800019099 /* cfsocket-connection-server */,
+				EE00A6A62BD9EEBA00019099 /* cfsocket-connection-client */,
+			);
+			path = "cfsocket-connection";
+			sourceTree = "<group>";
+		};
+		EE00A6A62BD9EEBA00019099 /* cfsocket-connection-client */ = {
+			isa = PBXGroup;
+			children = (
+				EE00A6A72BD9EEBA00019099 /* main.swift */,
+			);
+			path = "cfsocket-connection-client";
+			sourceTree = "<group>";
+		};
+		EE00A6B12BD9EEC800019099 /* cfsocket-connection-server */ = {
+			isa = PBXGroup;
+			children = (
+				EE00A6B22BD9EEC800019099 /* main.swift */,
+			);
+			path = "cfsocket-connection-server";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -293,6 +362,40 @@
 			productReference = EE00A6952BD8AFC900019099 /* socket-connection-client */;
 			productType = "com.apple.product-type.tool";
 		};
+		EE00A6A42BD9EEBA00019099 /* cfsocket-connection-client */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EE00A6A92BD9EEBA00019099 /* Build configuration list for PBXNativeTarget "cfsocket-connection-client" */;
+			buildPhases = (
+				EE00A6A12BD9EEBA00019099 /* Sources */,
+				EE00A6A22BD9EEBA00019099 /* Frameworks */,
+				EE00A6A32BD9EEBA00019099 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "cfsocket-connection-client";
+			productName = "cfsocket-connection-client";
+			productReference = EE00A6A52BD9EEBA00019099 /* cfsocket-connection-client */;
+			productType = "com.apple.product-type.tool";
+		};
+		EE00A6AF2BD9EEC800019099 /* cfsocket-connection-server */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EE00A6B42BD9EEC800019099 /* Build configuration list for PBXNativeTarget "cfsocket-connection-server" */;
+			buildPhases = (
+				EE00A6AC2BD9EEC800019099 /* Sources */,
+				EE00A6AD2BD9EEC800019099 /* Frameworks */,
+				EE00A6AE2BD9EEC800019099 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "cfsocket-connection-server";
+			productName = "cfsocket-connection-server";
+			productReference = EE00A6B02BD9EEC800019099 /* cfsocket-connection-server */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -318,6 +421,12 @@
 					EE00A6942BD8AFC900019099 = {
 						CreatedOnToolsVersion = 15.3;
 					};
+					EE00A6A42BD9EEBA00019099 = {
+						CreatedOnToolsVersion = 15.3;
+					};
+					EE00A6AF2BD9EEC800019099 = {
+						CreatedOnToolsVersion = 15.3;
+					};
 				};
 			};
 			buildConfigurationList = ACADFF5B2BCD18420077F0C3 /* Build configuration list for PBXProject "TCP.IP-implementations" */;
@@ -338,6 +447,8 @@
 				EE00A67D2BD8930C00019099 /* getaddrinfo-client */,
 				EE00A6892BD8A4C700019099 /* socket-connection-server */,
 				EE00A6942BD8AFC900019099 /* socket-connection-client */,
+				EE00A6A42BD9EEBA00019099 /* cfsocket-connection-client */,
+				EE00A6AF2BD9EEC800019099 /* cfsocket-connection-server */,
 			);
 		};
 /* End PBXProject section */
@@ -348,7 +459,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				ACADFF712BCD18630077F0C3 /* main.swift in Sources */,
-				EE00A69D2BD8B12F00019099 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,6 +493,24 @@
 			files = (
 				EE00A6982BD8AFC900019099 /* main.swift in Sources */,
 				EE00A69F2BD8B13700019099 /* Constants.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EE00A6A12BD9EEBA00019099 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE00A6A82BD9EEBA00019099 /* main.swift in Sources */,
+				EE00A6B82BD9EF1E00019099 /* Constants.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EE00A6AC2BD9EEC800019099 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE00A6B32BD9EEC800019099 /* main.swift in Sources */,
+				EE00A6B92BD9EF1E00019099 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -629,6 +757,54 @@
 			};
 			name = Release;
 		};
+		EE00A6AA2BD9EEBA00019099 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Y39R442P5T;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		EE00A6AB2BD9EEBA00019099 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Y39R442P5T;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		EE00A6B52BD9EEC800019099 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Y39R442P5T;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		EE00A6B62BD9EEC800019099 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Y39R442P5T;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -682,6 +858,24 @@
 			buildConfigurations = (
 				EE00A69A2BD8AFC900019099 /* Debug */,
 				EE00A69B2BD8AFC900019099 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EE00A6A92BD9EEBA00019099 /* Build configuration list for PBXNativeTarget "cfsocket-connection-client" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE00A6AA2BD9EEBA00019099 /* Debug */,
+				EE00A6AB2BD9EEBA00019099 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EE00A6B42BD9EEC800019099 /* Build configuration list for PBXNativeTarget "cfsocket-connection-server" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE00A6B52BD9EEC800019099 /* Debug */,
+				EE00A6B62BD9EEC800019099 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

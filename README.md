@@ -14,3 +14,11 @@ Use socket API to get the current timestamp from a NTP server.
 
 An example to demostrade the use of getaddrinfo function. 
 
+### sock-connections
+
+An server-client TCP connection example. 
+
+### cfsocket-connection
+
+CFSocket is a wrapper on BSD socket APIs. This example shows a simple client-server connection-oriented implementation. 
+

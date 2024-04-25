@@ -8,6 +8,8 @@
 import Foundation
 
 func runClient() {
+    CFSocketError.error
+    
     /// define a socket
     let sd = socket(AF_INET, SOCK_STREAM, 0)
     defer {
