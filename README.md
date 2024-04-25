@@ -12,7 +12,7 @@ Use socket API to get the current timestamp from a NTP server.
 
 ### getaddrinfo function 
 
-An example to demostrade the use of getaddrinfo function. 
+An example to demonstrate the use of getaddrinfo function. 
 
 ### sock-connections
 

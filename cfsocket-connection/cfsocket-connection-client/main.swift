@@ -16,7 +16,7 @@ func runClient() {
         AF_INET,
         SOCK_STREAM,
         IPPROTO_TCP,
-        CFSocketCallBackType.writeCallBack.rawValue | CFSocketCallBackType.connectCallBack.rawValue | CFSocketCallBackType.dataCallBack.rawValue,
+        CFSocketCallBackType.connectCallBack.rawValue | CFSocketCallBackType.dataCallBack.rawValue,
         { socket, callbackType, data, _, _ in
             print("client callback: \(callbackType)")
         },

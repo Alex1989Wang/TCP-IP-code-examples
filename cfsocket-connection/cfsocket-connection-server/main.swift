@@ -16,19 +16,32 @@ func runServer() {
         AF_INET,
         SOCK_STREAM,
         IPPROTO_TCP,
-        CFSocketCallBackType.readCallBack.rawValue | // 1
-        CFSocketCallBackType.acceptCallBack.rawValue | // 2
-        CFSocketCallBackType.connectCallBack.rawValue, // 4
-        { socket, callbackType, data, _, _ in
+        CFSocketCallBackType.acceptCallBack.rawValue,
+        { socket, callbackType, address, data, info in
             print("server socket callback: \(callbackType)")
             /// deal with callback
-            if callbackType == CFSocketCallBackType.dataCallBack {
-                /// data available for read
-                guard let data = data as? Data else {
+            if callbackType == CFSocketCallBackType.acceptCallBack {
+                /// handle new connection
+                /// the data parameter of the callback is a pointer to a CFSocketNativeHandle value (an integer socket number) representing the socket
+                /// https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/NetworkingTopics/Articles/UsingSocketsandSocketStreams.html#//apple_ref/doc/uid/CH73-SW8
+                
+                ///  https://developer.apple.com/documentation/corefoundation/cfsocketcallback
+                guard let address = address as? Data,
+                        let data = data else {
                     return
                 }
-                /// echo the data back
-                return
+                let sockAddrIn = address.withUnsafeBytes {
+                    $0.load(as: sockaddr_in.self)
+                }
+                let handle = data.load(as: CFSocketNativeHandle.self)
+                #if DEBUG
+                var addrString: String = ""
+                if let address = inet_ntoa(sockAddrIn.sin_addr) {
+                    addrString = String(cString: address)
+                }
+                print("socket address: \(addrString) port: \(CFSwapInt16BigToHost(sockAddrIn.sin_port))")
+                #endif
+                print("accept new connection socket handle: \(handle)")
             }
         },
         nil
