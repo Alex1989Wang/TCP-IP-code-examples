@@ -45,13 +45,14 @@ func runServer() {
         sin_addr: in_addr(s_addr: INADDR_ANY),
         sin_zero: (0, 0, 0, 0, 0, 0, 0, 0)
     )
-    ret = bind(
-        sd1,
-        withUnsafePointer(to: serverAddress, {
-            UnsafeRawPointer($0).assumingMemoryBound(to: sockaddr.self)
-        }),
-        socklen_t(MemoryLayout.size(ofValue: serverAddress))
-    )
+    ret = withUnsafePointer(to: serverAddress, {
+        let serverSockAddr = UnsafeRawPointer($0).assumingMemoryBound(to: sockaddr.self)
+        return bind(
+            sd1,
+            serverSockAddr,
+            socklen_t(MemoryLayout.size(ofValue: serverAddress))
+        )
+    })
     guard ret >= 0 else {
         fatalError("bind socket failed.")
     }

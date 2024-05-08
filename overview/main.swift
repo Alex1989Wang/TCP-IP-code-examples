@@ -17,9 +17,9 @@
 import Foundation
 import Darwin
 
-let googleNTPServer = "time.google.com"
+let googleNTPServer = "time.apple.com"
 // get by ping "time.google.com"
-let googleNTPServerIP = "216.239.35.4"
+let googleNTPServerIP = "17.253.116.253"
 let serverPort: UInt16 = 123
 
 func getTimeStampFromNTPServer() {
@@ -41,14 +41,15 @@ func getTimeStampFromNTPServer() {
     serverAddr.sin_port = CFSwapInt16HostToBig(serverPort)
     serverAddr.sin_addr.s_addr = inet_addr(googleNTPServerIP)
     
-    let connect = connect(
-        sockFd,
-        withUnsafePointer(to: serverAddr, { p in
-            UnsafeRawPointer(p).assumingMemoryBound(to: sockaddr.self)
-        }) ,
-        socklen_t(MemoryLayout.size(ofValue: serverAddr))
-    )
-    guard connect == 0 else {
+    let connectRet = withUnsafePointer(to: serverAddr) {
+        let serverSockAddr = UnsafeRawPointer($0).assumingMemoryBound(to: sockaddr.self)
+        return connect(
+            sockFd,
+            serverSockAddr,
+            socklen_t(MemoryLayout.size(ofValue: serverAddr))
+        )
+    }
+    guard connectRet == 0 else {
         fatalError("connect error")
     }
     

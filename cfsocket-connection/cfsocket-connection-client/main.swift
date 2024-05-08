@@ -45,42 +45,51 @@ func runClient() {
         ai_next: nil
     )
     var addrResult = addrinfo()
-    var addrPointer: UnsafeMutablePointer<addrinfo>? = withUnsafeMutablePointer(to: &addrResult, { $0 })
-    let getAddrError = getaddrinfo(
-        serverName.cString(using: .utf8),
-        "\(serverPort)",
-        &addressHints,
-        &addrPointer
-    )
-    guard getAddrError == 0 else {
-        var error: String = ""
-        if let err = gai_strerror(getAddrError) {
-            error = String(cString: err)
+    let serverAddrIn = withUnsafeMutablePointer(to: &addrResult) {
+        var addrPointer: UnsafeMutablePointer<addrinfo>? = $0
+        defer {
+            freeaddrinfo(addrPointer)
         }
-        fatalError("getaddrinfo failed: \(error)")
+        
+        /// getaddrinfo
+        let getAddrError = getaddrinfo(
+            serverName.cString(using: .utf8),
+            "\(serverPort)",
+            &addressHints,
+            &addrPointer
+        )
+        guard getAddrError == 0 else {
+            var error: String = ""
+            if let err = gai_strerror(getAddrError) {
+                error = String(cString: err)
+            }
+            fatalError("getaddrinfo failed: \(error)")
+        }
+        
+#if DEBUG
+        var temp = addrPointer
+        while temp != nil {
+            let sockaddrIn = UnsafeRawPointer(temp!.pointee.ai_addr).assumingMemoryBound(to: sockaddr_in.self).pointee
+            var addrString: String = ""
+            if let address = inet_ntoa(sockaddrIn.sin_addr) {
+                addrString = String(cString: address)
+            }
+            print("socket address: \(addrString) port: \(CFSwapInt16BigToHost(sockaddrIn.sin_port))")
+            temp = temp?.pointee.ai_next
+        }
+#endif
+        
+        guard let serverAddr = addrPointer?.pointee.ai_addr else {
+            fatalError("getaddrinfo returns no result.")
+        }
+        let serverAddrIn = UnsafeRawPointer(serverAddr).assumingMemoryBound(to: sockaddr_in.self).pointee
+        return serverAddrIn
     }
     
-    #if DEBUG
-    var temp = addrPointer
-    while temp != nil {
-        let sockaddrIn = UnsafeRawPointer(temp!.pointee.ai_addr).assumingMemoryBound(to: sockaddr_in.self).pointee
-        var addrString: String = ""
-        if let address = inet_ntoa(sockaddrIn.sin_addr) {
-            addrString = String(cString: address)
-        }
-        print("socket address: \(addrString) port: \(CFSwapInt16BigToHost(sockaddrIn.sin_port))")
-        temp = temp?.pointee.ai_next
-    }
-    #endif
-    guard let serverAddr = addrPointer?.pointee.ai_addr else {
-        fatalError("getaddrinfo returns no result.")
-    }
-    let serverAddrIn = UnsafeRawPointer(serverAddr).assumingMemoryBound(to: sockaddr_in.self).pointee
     let sockAddrPointer = withUnsafePointer(to: serverAddrIn, {
         UnsafeRawPointer($0).assumingMemoryBound(to: sockaddr.self)
     })
-    freeaddrinfo(addrPointer)
-    
+
     /// connect
     let addressData = NSData(bytes: sockAddrPointer, length: MemoryLayout.size(ofValue: serverAddrIn)) as CFData
     let conRet = CFSocketConnectToAddress(cfSocket, addressData, 300)

@@ -24,18 +24,22 @@ func runServer() {
         ai_addr: nil,
         ai_next: nil
     )
-    var result = addrinfo(), temp = addrinfo()
-    var resultPointer: UnsafeMutablePointer<addrinfo>? = withUnsafeMutablePointer(to: &result) { $0 }
+    var result = addrinfo()
     
     /// getaddrinfo
-    let ret = getaddrinfo(
-        "127.0.0.1".cString(using: .utf8),
-        withUnsafePointer(to: port, {
-            UnsafeRawPointer($0).assumingMemoryBound(to: Int8.self)
-        }),
-        &hints, 
-        &resultPointer
-    )
+    let ret = withUnsafeMutablePointer(to: &result) {
+        var resultPointer: UnsafeMutablePointer<addrinfo>? = $0
+        return withUnsafePointer(to: port) {
+            let portPointer = UnsafeRawPointer($0).assumingMemoryBound(to: Int8.self)
+            return getaddrinfo(
+                "127.0.0.1".cString(using: .utf8),
+                portPointer,
+                &hints,
+                &resultPointer
+            )
+        }
+    }
+    
     guard ret == 0 else {
         var reason: String = ""
         if let error = gai_strerror(ret) {

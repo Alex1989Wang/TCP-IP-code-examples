@@ -8,7 +8,6 @@
 import Foundation
 
 func runClient() {
-    CFSocketError.error
     
     /// define a socket
     let sd = socket(AF_INET, SOCK_STREAM, 0)
@@ -33,55 +32,63 @@ func runClient() {
         ai_next: nil
     )
     var addrResult = addrinfo()
-    var addrPointer: UnsafeMutablePointer<addrinfo>? = withUnsafeMutablePointer(to: &addrResult, { $0 })
-    let getAddrError = getaddrinfo(
-        serverName.cString(using: .utf8),
-        "\(serverPort)",
-        &addressHints,
-        &addrPointer
-    )
-    guard getAddrError == 0 else {
-        var error: String = ""
-        if let err = gai_strerror(getAddrError) {
-            error = String(cString: err)
+    let serverAddrIn = withUnsafeMutablePointer(to: &addrResult) { pointer in
+        var addrPointer: UnsafeMutablePointer<addrinfo>? = pointer
+        defer {
+            // free
+            freeaddrinfo(addrPointer)
         }
-        fatalError("getaddrinfo failed: \(error)")
-    }
-    
-    #if DEBUG
-    var temp = addrPointer
-    while temp != nil {
-        let sockaddrIn = UnsafeRawPointer(temp!.pointee.ai_addr).assumingMemoryBound(to: sockaddr_in.self).pointee
-        var addrString: String = ""
-        if let address = inet_ntoa(sockaddrIn.sin_addr) {
-            addrString = String(cString: address)
+        let getAddrError = getaddrinfo(
+            serverName.cString(using: .utf8),
+            "\(serverPort)",
+            &addressHints,
+            &addrPointer
+        )
+        guard getAddrError == 0 else {
+            var error: String = ""
+            if let err = gai_strerror(getAddrError) {
+                error = String(cString: err)
+            }
+            fatalError("getaddrinfo failed: \(error)")
         }
-        print("socket address: \(addrString) port: \(CFSwapInt16BigToHost(sockaddrIn.sin_port))")
-        temp = temp?.pointee.ai_next
+        
+#if DEBUG
+        var temp = addrPointer
+        while temp != nil {
+            let sockaddrIn = UnsafeRawPointer(temp!.pointee.ai_addr).assumingMemoryBound(to: sockaddr_in.self).pointee
+            var addrString: String = ""
+            if let address = inet_ntoa(sockaddrIn.sin_addr) {
+                addrString = String(cString: address)
+            }
+            print("socket address: \(addrString) port: \(CFSwapInt16BigToHost(sockaddrIn.sin_port))")
+            temp = temp?.pointee.ai_next
+        }
+#endif
+        
+        guard let serverAddr = addrPointer?.pointee.ai_addr else {
+            fatalError("getaddrinfo returns no result.")
+        }
+        let serverAddrIn = UnsafeRawPointer(serverAddr).assumingMemoryBound(to: sockaddr_in.self).pointee
+        
+        return serverAddrIn
     }
-    #endif
-    
-    guard let serverAddr = addrPointer?.pointee.ai_addr else {
-        fatalError("getaddrinfo returns no result.")
-    }
-    let serverAddrIn = UnsafeRawPointer(serverAddr).assumingMemoryBound(to: sockaddr_in.self).pointee
-    let sockAddrPointer = withUnsafePointer(to: serverAddrIn, {
-        UnsafeRawPointer($0).assumingMemoryBound(to: sockaddr.self)
-    })
-    freeaddrinfo(addrPointer)
     
     /// try connect
-    let conRet = connect(
-        sd,
-        sockAddrPointer,
-        socklen_t(MemoryLayout.size(ofValue: serverAddrIn))
-    )
+    let conRet = withUnsafePointer(to: serverAddrIn, {
+        let sockAddrPointer = UnsafeRawPointer($0).assumingMemoryBound(to: sockaddr.self)
+        let conRet = connect(
+            sd,
+            sockAddrPointer,
+            socklen_t(MemoryLayout.size(ofValue: serverAddrIn))
+        )
+        return conRet
+    })
     guard conRet >= 0 else {
         // if the error is: Connection refused
         // please start the server program first
         fatalError("connect() failed: \(String(cString: strerror(errno)))")
     }
-    
+
     var buffer: [CChar] = Array(repeating: "a".utf8CString[0], count: bufferLength)
     buffer[bufferLength - 1] = 0 // make this buffer null-terminated, so we can use String(cString: _) later without a crash
     let sendRet = send(sd, &buffer, bufferLength, 0)
@@ -118,6 +125,8 @@ func runClient() {
         bytesReceived += recvRet
     }
     /// log the received buffer
+    /// add a null-teminator
+    receiveBuffer[bufferLength - 1] = 0
     print("received result: \(String(cString: receiveBuffer)) number of bytes: \(bytesReceived)")
 }
 runClient()
