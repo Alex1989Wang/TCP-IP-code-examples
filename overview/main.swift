@@ -17,9 +17,8 @@
 import Foundation
 import Darwin
 
-let googleNTPServer = "time.apple.com"
+let nTPServer = "time.apple.com"
 // get by ping "time.google.com"
-let googleNTPServerIP = "17.253.116.253"
 let serverPort: UInt16 = 123
 
 func getTimeStampFromNTPServer() {
@@ -27,20 +26,45 @@ func getTimeStampFromNTPServer() {
     var ntpPacket = ntp_packet()
     ntpPacket.li_vn_mode = 0b00011011
     
+    /// get the time server's ip address
+    var hints = addrinfo()
+    hints.ai_family = AF_INET
+    hints.ai_socktype = SOCK_DGRAM
+    hints.ai_flags = AI_PASSIVE
+    
+    var result = addrinfo()
+    let serverAddr = withUnsafePointer(to: hints) { hintsPointer in
+        return withUnsafeMutablePointer(to: &result) {
+            var resultPointer: UnsafeMutablePointer<addrinfo>? = $0
+            let getServerInfoRet = getaddrinfo(
+                nTPServer,
+                "\(serverPort)",
+                hintsPointer, &resultPointer
+            )
+            guard getServerInfoRet == 0 else {
+                fatalError("can get the time server's ip address")
+            }
+            
+            /// use the first address
+            guard let serverAddr = resultPointer?.pointee,
+                  let serverAddrIn = UnsafeRawPointer(serverAddr.ai_addr)?.assumingMemoryBound(to: sockaddr_in.self) else {
+                fatalError("can get the time server's ip address")
+            }
+            return serverAddrIn.pointee
+        }
+    }
+    
     // setup the socket
     let sockFd = socket(PF_INET, SOCK_DGRAM, 0)
     guard sockFd >= 0 else {
         fatalError("socket error")
     }
     
-    var serverAddr: sockaddr_in = sockaddr_in()
-    bzero(&serverAddr, MemoryLayout.size(ofValue: serverAddr))
-    serverAddr.sin_family = sa_family_t(AF_INET)
-    
-    // Copy the server's IP address to the server address structure.
-    serverAddr.sin_port = CFSwapInt16HostToBig(serverPort)
-    serverAddr.sin_addr.s_addr = inet_addr(googleNTPServerIP)
-    
+    #if DEBUG
+    if let ipCharArray = inet_ntoa(serverAddr.sin_addr) {
+        print("connecting to: \(String(cString: ipCharArray))")
+    }
+    #endif
     let connectRet = withUnsafePointer(to: serverAddr) {
         let serverSockAddr = UnsafeRawPointer($0).assumingMemoryBound(to: sockaddr.self)
         return connect(
@@ -50,18 +74,20 @@ func getTimeStampFromNTPServer() {
         )
     }
     guard connectRet == 0 else {
-        fatalError("connect error")
+        fatalError("connect error: \(errno)")
     }
     
     // send a NTP packet
+    print("sending ntp packet")
     let sent = write(sockFd, &ntpPacket, MemoryLayout.size(ofValue: ntpPacket))
     guard sent >= 0 else {
         fatalError("write to socket error")
     }
     
+    print("recive ntp packet")
     let received = read(sockFd, &ntpPacket, MemoryLayout.size(ofValue: ntpPacket))
     guard received >= 0 else {
-        fatalError("reading from socket error")
+        fatalError("reading from socket error: \(errno)")
     }
     
     ntpPacket.txTm_s = CFSwapInt32BigToHost(ntpPacket.txTm_s)
