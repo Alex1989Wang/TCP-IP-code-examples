@@ -17,7 +17,7 @@
 import Foundation
 import Darwin
 
-let nTPServer = "time.apple.com"
+let nTPServer = "time.google.com"
 // get by ping "time.google.com"
 let serverPort: UInt16 = 123
 
@@ -47,10 +47,12 @@ func getTimeStampFromNTPServer() {
             
             /// use the first address
             guard let serverAddr = resultPointer?.pointee,
-                  let serverAddrIn = UnsafeRawPointer(serverAddr.ai_addr)?.assumingMemoryBound(to: sockaddr_in.self) else {
+                  let serverAddrInPointer = UnsafeRawPointer(serverAddr.ai_addr)?.assumingMemoryBound(to: sockaddr_in.self) else {
                 fatalError("can get the time server's ip address")
             }
-            return serverAddrIn.pointee
+            let serverAddrIn = serverAddrInPointer.pointee
+            freeaddrinfo(resultPointer)
+            return serverAddrIn
         }
     }
     
