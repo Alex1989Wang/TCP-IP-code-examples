@@ -17,7 +17,7 @@
 import Foundation
 import Darwin
 
-let nTPServer = "time.google.com"
+let nTPServer = "time.apple.com"
 // get by ping "time.google.com"
 let serverPort: UInt16 = 123
 
@@ -33,7 +33,7 @@ func getTimeStampFromNTPServer() {
     hints.ai_flags = AI_PASSIVE
     
     var result = addrinfo()
-    let serverAddr = withUnsafePointer(to: hints) { hintsPointer in
+    let (sockFd, connectRet) = withUnsafePointer(to: hints) { hintsPointer -> (Int32, Int32) in
         return withUnsafeMutablePointer(to: &result) {
             var resultPointer: UnsafeMutablePointer<addrinfo>? = $0
             let getServerInfoRet = getaddrinfo(
@@ -51,30 +51,29 @@ func getTimeStampFromNTPServer() {
                 fatalError("can get the time server's ip address")
             }
             let serverAddrIn = serverAddrInPointer.pointee
+            
+            // setup the socket
+            let sockFd = socket(serverAddr.ai_family, serverAddr.ai_socktype, serverAddr.ai_protocol)
+            guard sockFd >= 0 else {
+                fatalError("socket error")
+            }
+            
+            #if DEBUG
+            if let ipCharArray = inet_ntoa(serverAddrIn.sin_addr) {
+                print("connecting to: \(String(cString: ipCharArray))")
+            }
+            #endif
+            let connectRet = connect(
+                sockFd,
+                serverAddr.ai_addr,
+                serverAddr.ai_addrlen
+            )
+            
             freeaddrinfo(resultPointer)
-            return serverAddrIn
+            return (sockFd, connectRet)
         }
     }
     
-    // setup the socket
-    let sockFd = socket(PF_INET, SOCK_DGRAM, 0)
-    guard sockFd >= 0 else {
-        fatalError("socket error")
-    }
-    
-    #if DEBUG
-    if let ipCharArray = inet_ntoa(serverAddr.sin_addr) {
-        print("connecting to: \(String(cString: ipCharArray))")
-    }
-    #endif
-    let connectRet = withUnsafePointer(to: serverAddr) {
-        let serverSockAddr = UnsafeRawPointer($0).assumingMemoryBound(to: sockaddr.self)
-        return connect(
-            sockFd,
-            serverSockAddr,
-            socklen_t(MemoryLayout.size(ofValue: serverAddr))
-        )
-    }
     guard connectRet == 0 else {
         fatalError("connect error: \(errno)")
     }
