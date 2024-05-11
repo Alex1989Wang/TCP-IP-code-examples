@@ -86,25 +86,25 @@ func runClient() {
         return serverAddrIn
     }
     
-    let sockAddrPointer = withUnsafePointer(to: serverAddrIn, {
-        UnsafeRawPointer($0).assumingMemoryBound(to: sockaddr.self)
+    let addressData = withUnsafePointer(to: serverAddrIn, {
+        let sockAddrPointer = UnsafeRawPointer($0).assumingMemoryBound(to: sockaddr.self)
+        /// connect
+        let addressData = NSData(bytes: sockAddrPointer, length: MemoryLayout.size(ofValue: serverAddrIn)) as CFData
+        return addressData
     })
-
-    /// connect
-    let addressData = NSData(bytes: sockAddrPointer, length: MemoryLayout.size(ofValue: serverAddrIn)) as CFData
     let conRet = CFSocketConnectToAddress(cfSocket, addressData, 300)
     guard conRet == .success else {
         /// check if the server program is running if connection fails
         fatalError("client can't connect to \(serverName) port: \(serverPort)")
     }
-    
+
     /// send data
     var dataBuffer: [CChar] = Array(repeating: "a".utf8CString[0], count: bufferLength)
     dataBuffer[bufferLength - 1] = 0 // null-terminated
     let data = dataBuffer.withUnsafeBufferPointer { Data(buffer: $0) }
     let sendRet = CFSocketSendData(
         cfSocket,
-        addressData,
+        nil, // nil since the socket is connected
         data as CFData,
         300
     )
